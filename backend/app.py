@@ -40,24 +40,6 @@ def token_required(f):
         return f(user, *args, **kwargs)
     return decorated_function
 
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.json
-    username = data['username']
-    password = data['password']
-
-    conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
-    user = cur.fetchone()
-    cur.close()
-    conn.close()
-
-    if user:
-        return jsonify({'status': 'success', 'message': 'Login successful', 'user_id': user['id']}), 200
-    else:
-        return jsonify({'status': 'error', 'message': 'Invalid credentials'}), 401
-
 @app.route('/api/cars', methods=['GET'])
 @token_required
 def get_cars(user):

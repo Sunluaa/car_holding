@@ -2,8 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from flask import render_template
-from flask import jsonify
+from functools import wraps
 
 app = Flask(__name__)
 CORS(app)
