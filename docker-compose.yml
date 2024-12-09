@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   frontend:
     build: ./frontend
@@ -25,11 +27,13 @@ services:
       - app-network
 
   monitoring:
-      build:
-        context: ./monitoring
-      container_name: monitoring
-      depends_on:
-        - db
+    build:
+      context: ./monitoring
+    container_name: monitoring
+    depends_on:
+      - db
+    networks:
+      - app-network
 
   backend:
     build: ./backend
@@ -60,6 +64,7 @@ services:
 
 volumes:
   postgres_data:
+
 networks:
   app-network:
     driver: bridge

@@ -75,7 +75,7 @@
             }
         });
         
-        // Функция для загрузки списка машин
+                // Функция для загрузки списка машин
         async function loadCars() {
             try {
                 const token = sessionStorage.getItem('userId');
@@ -100,7 +100,7 @@
                             <h3>${car.make} (${car.year})</h3>
                             <p>Color: ${car.color}</p>
                             <p>License Plate: ${car.license_plate}</p>
-                            <p>Kilomets: ${car.mileage}</p>
+                            <p>Kilomets: <span id="kilomets-${car.id}">${car.mileage}</span></p>
                             <button onclick="deleteCar(${car.id})">Delete</button>
                         </div>
                     `;
@@ -111,8 +111,36 @@
             }
         }
 
-    
+        // Функция для периодического обновления километража автомобилей
+        // Периодическое обновление километража
+        function startRealTimeMileageUpdate() {
+            setInterval(async () => {
+                try {
+                    // Отправляем запрос к серверу
+                    const response = await fetch('http://localhost:8001/api/cars', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
 
+                    // Обрабатываем ответ
+                    if (response.ok) {
+                        const cars = await response.json();
+                        cars.forEach(car => {
+                            const mileageElement = document.getElementById(`kilomets-${car.id}`);
+                            if (mileageElement) {
+                                mileageElement.textContent = car.mileage; // Обновляем километраж
+                            }
+                        });
+                    } else {
+                        console.error('Failed to fetch mileage updates:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error during mileage update:', error);
+                }
+            }, 2000); // Интервал обновления: каждые 2 секунды
+        }
 
         // Функция добавления машины
         document.getElementById('addCarFormSubmit').addEventListener('submit', async (e) => {
