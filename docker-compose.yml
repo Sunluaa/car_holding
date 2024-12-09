@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   frontend:
+    image: my-frontend:1.0
     build: ./frontend
     ports:
       - "80:80"
@@ -13,29 +14,43 @@ services:
       - app-network
 
   auth:
+    image: my-auth:1.0
     build: ./auth
     ports:
       - "8000:8000"
     depends_on:
       - db
     environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
+      FLASK_APP: app.py
+      FLASK_ENV: development
+      DB_HOST: db
+      DB_NAME: tourismdb
+      DB_USER: postgres
+      DB_PASSWORD: password
     volumes:
       - ./auth:/app
     networks:
       - app-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
   monitoring:
-    build:
-      context: ./monitoring
+    image: my-monitor:1.0
+    build: ./monitoring
     container_name: monitoring
     depends_on:
       - db
     networks:
       - app-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
   backend:
+    image: my-backend:1.0
     build: ./backend
     ports:
       - "8001:8001"
@@ -43,12 +58,20 @@ services:
       - db
       - auth
     environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
+      FLASK_APP: app.py
+      FLASK_ENV: development
+      DB_HOST: db
+      DB_NAME: tourismdb
+      DB_USER: postgres
+      DB_PASSWORD: password
     volumes:
       - ./backend:/app
     networks:
       - app-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   db:
     image: postgres:13
@@ -57,14 +80,18 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes:
-      - ./db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
+      - ./db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app-network
-
-volumes:
-  postgres_data:
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
 networks:
   app-network:
-    driver: bridge
+    driver: overlay
+
+volumes:
+  postgres_data:
