@@ -63,8 +63,8 @@ def add_car(user):
 
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("INSERT INTO cars (make, color, year, license_plate) VALUES (%s, %s, %s, %s) RETURNING *",
-                (make, color, year, license_plate))
+    cur.execute("INSERT INTO cars (make, color, year, license_plate, mileage) VALUES (%s, %s, %s, %s, %s) RETURNING *",
+                (make, color, year, license_plate, 0))
     car = cur.fetchone()
     conn.commit()
     cur.close()

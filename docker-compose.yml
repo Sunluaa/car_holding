@@ -24,6 +24,13 @@ services:
     networks:
       - app-network
 
+  monitoring:
+      build:
+        context: ./monitoring
+      container_name: monitoring
+      depends_on:
+        - db
+
   backend:
     build: ./backend
     ports:
