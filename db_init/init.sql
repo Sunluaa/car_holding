@@ -18,4 +18,8 @@ CREATE TABLE IF NOT EXISTS cars (
 -- Вставка данных
 INSERT INTO users (username, password) VALUES ('admin', 'admin');
 INSERT INTO users (username, password) VALUES ('admin123', '123');
-INSERT INTO cars (color, year, make, license_plate) VALUES ('red', 2005, 'gtr', 'x205oa777');
+INSERT INTO users (username, password) VALUES ('123', '123');
+INSERT INTO cars (color, year, make, license_plate) VALUES ('red', 2005, 'gtr', 'x205oa 777');
+INSERT INTO cars (color, year, make, license_plate) VALUES ('black', 2014, 'Qashqai', 'a123bc 77');
+INSERT INTO cars (color, year, make, license_plate) VALUES ('green', 2022, 'X-Trail', 'с456ур 99');
+INSERT INTO cars (color, year, make, license_plate) VALUES ('green', 2000, 'Leaf', ' с789но 50');

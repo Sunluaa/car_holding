@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    image: my-frontend:1.0
+    image: my-frontend:v2.0
     build: ./frontend
     ports:
       - "80:80"
@@ -14,7 +14,7 @@ services:
       - app-network
 
   auth:
-    image: my-auth:1.0
+    image: my-auth:v2.0
     build: ./auth
     ports:
       - "8000:8000"
@@ -37,8 +37,10 @@ services:
         condition: on-failure
 
   monitoring:
-    image: my-monitor:1.0
+    image: my-monitor:v2.0
     build: ./monitoring
+    ports:
+      - "8008:8008"
     container_name: monitoring
     depends_on:
       - db
@@ -50,7 +52,7 @@ services:
         condition: on-failure
 
   backend:
-    image: my-backend:1.0
+    image: my-backend:v2.0
     build: ./backend
     ports:
       - "8001:8001"
@@ -75,6 +77,9 @@ services:
 
   db:
     image: postgres:13
+    build:
+      context: ./db_init
+      dockerfile: Dockerfile
     environment:
       POSTGRES_DB: tourismdb
       POSTGRES_USER: postgres
